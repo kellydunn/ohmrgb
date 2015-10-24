@@ -1,0 +1,19 @@
+{
+  "name": "ohmrgb",
+  "version": "0.0.0",
+  "description": "js implementation of the OhmRGB for livid instruments",
+  "main": "ohmrgb.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/kellydunn/ohmrgb"
+  },
+  "author": "kellydunn",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kellydunn/ohmrgb/issues"
+  },
+  "homepage": "https://github.com/kellydunn/ohmrgb"
+}
