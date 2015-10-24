@@ -87,6 +87,16 @@ exports.CROSSFADER_CONTROL_CODE = exports.controlID(
     midi.CC
 );
 
+exports.LEFT_PLAY_CONTROL_CODE = exports.controlID(
+    exports.LEFT_PLAY,
+    midi.NOTE
+);
+
+exports.RIGHT_PLAY_CONTROL_CODE = exports.controlID(
+    exports.RIGHT_PLAY,
+    midi.NOTE
+);
+
 exports.MIDIMessageEventHandler = function(event) {
     var controlCode = exports.controlID(event.data[1], event.data[0]);
     exports.callbacks[controlCode](event);
