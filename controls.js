@@ -89,5 +89,5 @@ exports.CROSSFADER_CONTROL_CODE = exports.controlID(
 
 exports.MIDIMessageEventHandler = function(event) {
     var controlCode = exports.controlID(event.data[1], event.data[0]);
-    exports.callbacks(event);
+    exports.callbacks[controlCode](event);
 }
