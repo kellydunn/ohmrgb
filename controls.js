@@ -1,3 +1,5 @@
+var midi = require("./midi.js");
+
 exports.CROSSFADER = 24;
 exports.LEFT_PLAY = 64;
 exports.RIGHT_PLAY = 72;
@@ -7,8 +9,15 @@ exports.SYSEX_SUFFIX = [ 0xF7 ];
 
 exports.callbacks = {};
 
-exports.registerCallback = function(midiButtonID, f) {
-    exports.callbacks[midiButtonID] = f;
+// This will register a callback to be executed
+// when the control of the passed in midiControlCode
+// is actuated.
+//
+// Note: midiControlCode is a 16-byte integer
+//       the represents the message code + the corresponding
+//       OhmRGB MIDI Component ID
+exports.registerCallback = function(midiControlCode, f) {
+    exports.callbacks[midiControlCode] = f;
 };
 
 /*
@@ -67,4 +76,18 @@ exports.sysexButtonID = function(midiButtonID) {
     }
     
     return 0;
+}
+
+exports.controlID = function(ohmrgbID, midiType) {
+    return midiType << 8 | ohmrgbID;
+}
+
+exports.CROSSFADER_CONTROL_CODE = exports.controlID(
+    exports.CROSSFADER,
+    midi.CC
+);
+
+exports.MIDIMessageEventHandler = function(event) {
+    var controlCode = exports.ControlID(event.data[1], event.data[0]);
+    exports.callbacks(event);
 }
