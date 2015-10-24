@@ -98,6 +98,8 @@ exports.RIGHT_PLAY_CONTROL_CODE = exports.controlID(
 );
 
 exports.MIDIMessageEventHandler = function(event) {
-    var controlCode = exports.controlID(event.data[1], event.data[0]);
-    exports.callbacks[controlCode](event);
+    if(event.data[0] == midi.CC || (event.data[0] == midi.NOTE & event.data[2] == midi.BUTTON_DOWN)) {
+        var controlCode = exports.controlID(event.data[1], event.data[0]);
+        exports.callbacks[controlCode](event);
+    }
 }
