@@ -121,7 +121,7 @@ exports.MIDIMessageEventHandler = function(event) {
 
 // Currently only draws the grid, need to abstract it for other components.
 exports.drawSysexMessage = function() {
-    var msg = new Uint8Array(exports.SYSEX_PREFIX.length + 43);
+    var msg = new Uint8Array(exports.SYSEX_PREFIX.length + 44);
     var index = 0;
     
     for(var i = 0; i < exports.SYSEX_PREFIX.length; i++) {
@@ -130,6 +130,7 @@ exports.drawSysexMessage = function() {
     }
     
     msg[index] = 0x04; // Set all LEDs message
+    index++;
 
     // message length is 42 bytes long,
     // interleaving buttons between each byte
