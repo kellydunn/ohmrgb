@@ -78,8 +78,24 @@ exports.sysexButtonID = function(midiButtonID) {
     return 0;
 }
 
+exports.gridID = function(row, column) {
+    return row + (8 * column);
+}
+
 exports.controlID = function(ohmrgbID, midiType) {
     return midiType << 8 | ohmrgbID;
+}
+
+exports.RGBPayload = function(controlCode, color) {
+    var polarity = controlCode % 2
+
+    // Shift even numbers three bits to the left
+    // as the last three bits are for the oddly named buttons.
+    if(polarity == 0) {
+        color = color << 3
+    }
+
+    return color
 }
 
 exports.CROSSFADER_CONTROL_CODE = exports.controlID(
