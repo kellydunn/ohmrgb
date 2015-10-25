@@ -124,7 +124,7 @@ exports.drawSysexMessage = function() {
     var msg = new Int8Array(exports.SYSEX_PREFIX + 44);
     var index = 0;
     
-    for(var i = 0; i < exports.SYSEX_PREFIX; i++) {
+    for(var i = 0; i < exports.SYSEX_PREFIX.length; i++) {
         msg[i] = exports.SYSEX_PREFIX[i];
         index++
     }
