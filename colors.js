@@ -5,3 +5,4 @@ exports.CYAN    = 0b011;
 exports.YELLOW  = 0b110;
 exports.MAGENTA = 0b101;
 exports.WHITE   = 0b111;
+exports.NONE    = 0b000;

@@ -8,6 +8,7 @@ exports.SYSEX_PREFIX = [ 0xF0, 0x00, 0x01, 0x61, 0x07 ];
 exports.SYSEX_SUFFIX = [ 0xF7 ];
 
 exports.callbacks = {};
+exports.lightingLookup = {};
 
 // This will register a callback to be executed
 // when the control of the passed in midiControlCode
@@ -118,4 +119,22 @@ exports.MIDIMessageEventHandler = function(event) {
         var controlCode = exports.controlID(event.data[1], event.data[0]);
         exports.callbacks[controlCode](event);
     }
+}
+
+// Currently only draws the grid, need to abstract it for other components.
+exports.drawSysexMessage = function() {
+    var msg  = SYSEX_MESSAGE_PREFIX;
+    msg = msg.push(0x04);
+
+    // message length is 42 bytes long,
+    // interleaving buttons between each byte
+    for(var i = 0; i < 84; i+=2) {
+        var first = lightingLookup[i];
+        var second = lightingLookup[i+1];
+        var payload = exports.RGBPayload(first) | exports.RGBPayload(second);
+        msg = msg.push(payload)
+    }
+
+    msg = msg.push(SYSEX_MESSAGE_SUFFIX);
+    return msg;
 }
