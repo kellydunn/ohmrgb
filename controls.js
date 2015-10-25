@@ -135,7 +135,7 @@ exports.drawSysexMessage = function() {
         var control2 = exports.controlID(midiButton2, midi.NOTE);
         var second = exports.lightingLookup[control2];
 
-        var payload = exports.RGBPayload(first) | exports.RGBPayload(second);
+        var payload = exports.RGBPayload(control, first) | exports.RGBPayload(control2, second);
         msg.push(payload)
     }
     
