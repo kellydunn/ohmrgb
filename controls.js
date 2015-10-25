@@ -121,7 +121,7 @@ exports.MIDIMessageEventHandler = function(event) {
 
 // Currently only draws the grid, need to abstract it for other components.
 exports.drawSysexMessage = function() {
-    var msg  = exports.SYSEX_MESSAGE_PREFIX;
+    var msg = exports.SYSEX_PREFIX;
     msg = msg.push(0x04);
 
     // message length is 42 bytes long,
@@ -134,6 +134,6 @@ exports.drawSysexMessage = function() {
         msg = msg.push(payload)
     }
 
-    msg = msg.push(exports.SYSEX_MESSAGE_SUFFIX);
+    msg = msg.push(exports.SYSEX_SUFFIX);
     return msg;
 }
