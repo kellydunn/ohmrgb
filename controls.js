@@ -127,10 +127,12 @@ exports.drawSysexMessage = function() {
     // message length is 42 bytes long,
     // interleaving buttons between each byte
     for(var i = 0; i < 84; i+=2) {
-        var control = exports.controlID(i, midi.NOTE);
+        var midiButton = exports.getID(i % 8, i/8);
+        var control = exports.controlID(midiButton, midi.NOTE);
         var first = exports.lightingLookup[control];
 
-        var control2 = exports.controlID(i+1, midi.NOTE);
+        var midiButton2 = exports.getID((i+1) % 8, (i+1)/8);        
+        var control2 = exports.controlID(midiButton2, midi.NOTE);
         var second = exports.lightingLookup[control2];
 
         var payload = exports.RGBPayload(first) | exports.RGBPayload(second);
