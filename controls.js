@@ -88,11 +88,9 @@ exports.controlID = function(ohmrgbID, midiType) {
 }
 
 exports.RGBPayload = function(controlCode, color) {
-    var polarity = controlCode % 2
-
     // Shift even numbers three bits to the left
     // as the last three bits are for the oddly named buttons.
-    if(polarity == 0) {
+    if(controlCode % 2 == 0) {
         color = color << 3
     }
 
@@ -123,7 +121,7 @@ exports.MIDIMessageEventHandler = function(event) {
 
 // Currently only draws the grid, need to abstract it for other components.
 exports.drawSysexMessage = function() {
-    var msg  = SYSEX_MESSAGE_PREFIX;
+    var msg  = exports.SYSEX_MESSAGE_PREFIX;
     msg = msg.push(0x04);
 
     // message length is 42 bytes long,
@@ -131,10 +129,11 @@ exports.drawSysexMessage = function() {
     for(var i = 0; i < 84; i+=2) {
         var first = lightingLookup[i];
         var second = lightingLookup[i+1];
+
         var payload = exports.RGBPayload(first) | exports.RGBPayload(second);
         msg = msg.push(payload)
     }
 
-    msg = msg.push(SYSEX_MESSAGE_SUFFIX);
+    msg = msg.push(exports.SYSEX_MESSAGE_SUFFIX);
     return msg;
 }
