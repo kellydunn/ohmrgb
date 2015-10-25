@@ -13,7 +13,7 @@ exports.callbacks = {};
 // when the control of the passed in midiControlCode
 // is actuated.
 //
-// Note: midiControlCode is a 16-byte integer
+// Note: midiControlCode is a 16-bit integer
 //       the represents the message code + the corresponding
 //       OhmRGB MIDI Component ID
 exports.registerCallback = function(midiControlCode, f) {
