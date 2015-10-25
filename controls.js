@@ -133,7 +133,7 @@ exports.drawSysexMessage = function() {
         var payload = exports.RGBPayload(first) | exports.RGBPayload(second);
         msg.push(payload)
     }
-
-    msg = msg.push(exports.SYSEX_SUFFIX);
+    
+    msg.push(exports.SYSEX_SUFFIX);
     return msg;
 }
