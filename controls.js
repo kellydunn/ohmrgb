@@ -5,7 +5,7 @@ exports.LEFT_PLAY = 64;
 exports.RIGHT_PLAY = 72;
 
 exports.SYSEX_PREFIX = [ 0xF0, 0x00, 0x01, 0x61, 0x07 ];
-exports.SYSEX_SUFFIX = [ 0xF7 ];
+exports.SYSEX_SUFFIX = 0xF7;
 
 exports.callbacks = {};
 exports.lightingLookup = {};
