@@ -22,24 +22,6 @@ exports.registerCallback = function(midiControlCode, f) {
 };
 
 /*
-Note: This formula is slightly complex
-      due to the fact that the mutation of ids
-      is not very well related to its midicounterpart.
-
-      The basic translation formula appears
-      to be the following:
-        - Determine if midiButtonID is odd or even.
-        - if odd,
-          - subtract 63 from its column position * 8
-            and subtract that by 3 subtracted by
-            its current position in odd interleaving order.
-        - if even,
-          - subtract 63 from its column position * 8
-            and subtract that by 8 subtraced by
-            its current position in even interleaving order.
-      
-      Below are some charts of the respective matricies:
-
 MIDI OhmRGB matrix:
 0 8  16 24 32 40 48 56
 1 9  17 25 33 41 49 57
@@ -49,7 +31,19 @@ MIDI OhmRGB matrix:
 5 13 21 29 37 45 53 61
 6 14 22 30 38 46 54 62
 7 15 23 31 39 47 55 63
+*/
+exports.gridLookup = {
+    0: 0, 1:  8, 2: 16, 3 : 24, 4 : 32, 5 : 40, 6 : 48, 7 : 56,
+    8: 1, 9:  9, 10: 17, 11: 25, 12: 33, 13: 41, 14: 49, 15: 57,
+    16: 2, 17: 10, 18: 18, 19: 26, 20: 34, 21: 42, 22: 50, 23: 58,
+    24: 3, 25: 11, 26: 19, 27: 27, 28: 35, 29: 43, 30: 51, 31: 59,
+    32: 4, 33: 12, 34: 20, 35: 28, 36: 36, 37: 44, 38: 52, 39: 60,
+    40: 5, 41: 13, 42: 21, 43: 29, 44: 37, 45: 45, 46: 53, 47: 61,
+    49: 6, 49: 14, 50: 22, 51: 30, 52: 38, 53: 46, 54: 54, 55: 62,
+    56: 7, 57: 15, 58: 23, 59: 31, 60: 39, 61: 47, 62: 55, 63: 63,         
+}
 
+/*
 Sysex OhmRGB matrix:
 56 48 40 32 24 16 8  0
 60 52 44 36 28 20 12 4
@@ -60,41 +54,40 @@ Sysex OhmRGB matrix:
 59 51 43 35 27 19 11 3
 63 55 47 39 31 23 15 7
 */
+exports.sysexLookup = {
+    0 : 56, 1 : 48, 2 : 40, 3 : 32, 4 : 24, 5 : 16, 6 : 8,  7 : 0,
+    8 : 60, 9 : 52, 10: 44, 11: 36, 12: 28, 13: 20, 14: 12, 15: 4,
+    16: 57, 17: 49, 18: 41, 19: 33, 20: 25, 21: 17, 22: 9,  23: 1,
+    24: 61, 25: 53, 26: 45, 27: 37, 28: 29, 29: 21, 30: 13, 31: 5,
+    32: 58, 33: 50, 34: 42, 35: 34, 36: 26, 37: 18, 38: 10, 39: 2,
+    40: 62, 41: 54, 42: 46, 43: 38, 44: 30, 45: 22, 46: 14, 47: 6,
+    49: 59, 49: 51, 50: 43, 51: 35, 52: 27, 53: 19, 54: 11, 55: 3,
+    56: 63, 57: 55, 58: 47, 59: 39, 60: 31, 61: 23, 62: 15, 63: 7,         
+}
+
+exports.reverseSysexLookup = function() {
+    var res = {};
+    for(var key in exports.sysexLookup) {
+        res[exports.sysexLookup[key]] = key;
+    }
+
+    return res;
+}();
+
 exports.sysexButtonID = function(midiButtonID) {
-    // First check to see if the button ID
-    // is in the grid, then apply grid formula.
     if(midiButtonID < 64) {
-        
-        var column = midiButton / 8;
-        var row  = midiButton % 8;        
-        var polarity = midiButton % 2;
-        
-        if(polarity == 1) {
-            return (63 - (column * 8) - (3 - (row/2)));
-        } else {
-            return (63 - (column * 8) - (8 - (row/2)));
-        }
+        return exports.sysexLookup(midiButtonID);
     }
     
     return 0;
 }
 
-exports.gridID = function(row, column) {
-    return row + (8 * column);
+exports.gridID = function(button) {
+    return exports.gridLookup[button];
 }
 
 exports.controlID = function(ohmrgbID, midiType) {
     return midiType << 8 | ohmrgbID;
-}
-
-exports.RGBPayload = function(controlCode, color) {
-    // Shift even numbers three bits to the left
-    // as the last three bits are for the oddly named buttons.
-    if(controlCode % 2 == 0) {
-        color = color << 3
-    }
-
-    return color
 }
 
 exports.CROSSFADER_CONTROL_CODE = exports.controlID(
@@ -136,15 +129,17 @@ exports.drawSysexMessage = function() {
     // interleaving buttons between each byte
     // first, determine the state of each button in the grid.
     for(var i = 0; i < 64; i+=2) {
-        var midiButton = exports.gridID(Math.floor(i / 8), i % 8);
+        var reverseSysex = exports.reverseSysexLookup[i];
+        var midiButton = exports.gridID(reverseSysex);
         var control = exports.controlID(midiButton, midi.NOTE);
         var first = exports.lightingLookup[control];
 
-        var midiButton2 = exports.gridID(Math.floor((i+1) / 8), (i+1) % 8);        
+        var reverseSysex2 = exports.reverseSysexLookup[i+1];
+        var midiButton2 = exports.gridID(reverseSysex2);
         var control2 = exports.controlID(midiButton2, midi.NOTE);
         var second = exports.lightingLookup[control2];
 
-        var payload = exports.RGBPayload(control, first) | exports.RGBPayload(control2, second);
+        var payload = first | second << 3;
         msg[index] = payload
         index++
     }
