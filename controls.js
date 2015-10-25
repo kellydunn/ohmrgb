@@ -127,8 +127,8 @@ exports.drawSysexMessage = function() {
     // message length is 42 bytes long,
     // interleaving buttons between each byte
     for(var i = 0; i < 84; i+=2) {
-        var first = lightingLookup[i];
-        var second = lightingLookup[i+1];
+        var first = exports.lightingLookup[i];
+        var second = exports.lightingLookup[i+1];
 
         var payload = exports.RGBPayload(first) | exports.RGBPayload(second);
         msg = msg.push(payload)
