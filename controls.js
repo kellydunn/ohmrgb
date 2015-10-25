@@ -124,8 +124,9 @@ exports.drawSysexMessage = function() {
     var msg = new Int8Array(exports.SYSEX_PREFIX + 44);
     var index = 0;
     
-    for(index < exports.SYSEX_PREFIX; index++) {
-        msg[index] = exports.SYSEX_PREFIX[index];
+    for(var i = 0; i < exports.SYSEX_PREFIX; i++) {
+        msg[i] = exports.SYSEX_PREFIX[i];
+        index++
     }
     
     msg[index] = 0x04; // Set all LEDs message
