@@ -121,7 +121,7 @@ exports.MIDIMessageEventHandler = function(event) {
 
 // Currently only draws the grid, need to abstract it for other components.
 exports.drawSysexMessage = function() {
-    var msg = new Uint8Array(exports.SYSEX_PREFIX.length + 44);
+    var msg = new Uint8Array(exports.SYSEX_PREFIX.length + 43);
     var index = 0;
     
     for(var i = 0; i < exports.SYSEX_PREFIX.length; i++) {
